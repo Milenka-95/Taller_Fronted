@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 import type { Proveedor } from "@/lib/types"
 import { ProveedorModal } from "./proveedor-modal"
 import {
@@ -33,7 +34,7 @@ export default function ProveedoresPage() {
       const response = await api.get("/proveedores")
       setProveedores(response.data)
     } catch (error) {
-      console.error("[v0] Error fetching proveedores:", error)
+      safeConsole.error("[v0] Error fetching proveedores:", error)
       toast({
         title: "Error",
         description: "No se pudieron cargar los proveedores",

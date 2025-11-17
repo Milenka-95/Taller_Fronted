@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table"
 import { Plus, Eye, Trash2, FileText } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 import type { Venta } from "@/lib/types"
 import { VentaModal } from "./venta-modal"
 import { VentaDetailModal } from "./venta-detail-modal"
@@ -36,7 +37,7 @@ export default function VentasPage() {
       const response = await api.get("/ventas")
       setVentas(response.data)
     } catch (error) {
-      console.error("[v0] Error fetching ventas:", error)
+      safeConsole.error("[v0] Error fetching ventas:", error)
       toast({
         title: "Error",
         description: "No se pudieron cargar las ventas",

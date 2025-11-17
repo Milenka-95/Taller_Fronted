@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 import type { Producto } from "@/lib/types"
 import { ProductoModal } from "./producto-modal"
 import {
@@ -34,7 +35,7 @@ export default function ProductosPage() {
       const response = await api.get("/productos")
       setProductos(response.data)
     } catch (error) {
-      console.error("[v0] Error fetching productos:", error)
+      safeConsole.error("[v0] Error fetching productos:", error)
       toast({
         title: "Error",
         description: "No se pudieron cargar los productos",

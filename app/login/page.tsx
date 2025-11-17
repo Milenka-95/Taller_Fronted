@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import { useAuthStore } from "@/lib/store"
 import api from "@/lib/api"
 import { Wrench } from "lucide-react"
+import { safeConsole } from "@/lib/utils"
 
 export default function LoginPage() {
   const [correo, setCorreo] = useState("")
@@ -70,9 +71,7 @@ export default function LoginPage() {
       
     } catch (error: any) {
       // Log errors in development only
-      if (process.env.NODE_ENV === 'development') {
-        console.error("Error en login:", error)
-      }
+      safeConsole.error("Error en login:", error)
       
       toast({
         title: "Error de autenticación",

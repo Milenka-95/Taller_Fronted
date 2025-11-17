@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Truck, Package, Receipt, TrendingUp, Wrench, Building2, ShoppingCart } from "lucide-react"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 
 interface DashboardStats {
   totalClientes: number
@@ -32,55 +33,55 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-  console.log("=== DASHBOARD CARGANDO ===")
+  safeConsole.log("=== DASHBOARD CARGANDO ===")
   
   // Verificar autenticación
   const token = localStorage.getItem("token")
   const user = localStorage.getItem("user")
   
-  console.log("Token en localStorage:", token ? token.substring(0, 30) + "..." : "NO EXISTE")
-  console.log("User en localStorage:", user)
+  safeConsole.log("Token en localStorage:", token ? token.substring(0, 30) + "..." : "NO EXISTE")
+  safeConsole.log("User en localStorage:", user)
   
   if (!token) {
-    console.error("❌ No hay token, redirigiendo a login...")
+    safeConsole.error("❌ No hay token, redirigiendo a login...")
     router.push("/login")
     return
   }
 
-  console.log("✅ Token encontrado, cargando estadísticas...")
+  safeConsole.log("✅ Token encontrado, cargando estadísticas...")
 
     const fetchStats = async () => {
       try {
-        console.log("Obteniendo estadísticas del dashboard...")
+        safeConsole.log("Obteniendo estadísticas del dashboard...")
         
         // Fetch stats from backend
         const [clientes, vehiculos, productos, ventas, repuestos, proveedores, inventario] = await Promise.all([
           api.get("/clientes").catch((err) => {
-            console.error("Error obteniendo clientes:", err)
+            safeConsole.error("Error obteniendo clientes:", err)
             return { data: [] }
           }),
           api.get("/vehiculos").catch((err) => {
-            console.error("Error obteniendo vehiculos:", err)
+            safeConsole.error("Error obteniendo vehiculos:", err)
             return { data: [] }
           }),
           api.get("/productos").catch((err) => {
-            console.error("Error obteniendo productos:", err)
+            safeConsole.error("Error obteniendo productos:", err)
             return { data: [] }
           }),
           api.get("/ventas").catch((err) => {
-            console.error("Error obteniendo ventas:", err)
+            safeConsole.error("Error obteniendo ventas:", err)
             return { data: [] }
           }),
           api.get("/repuestos").catch((err) => {
-            console.error("Error obteniendo repuestos:", err)
+            safeConsole.error("Error obteniendo repuestos:", err)
             return { data: [] }
           }),
           api.get("/proveedores").catch((err) => {
-            console.error("Error obteniendo proveedores:", err)
+            safeConsole.error("Error obteniendo proveedores:", err)
             return { data: [] }
           }),
           api.get("/inventario").catch((err) => {
-            console.error("Error obteniendo inventario:", err)
+            safeConsole.error("Error obteniendo inventario:", err)
             return { data: [] }
           }),
         ])
@@ -102,9 +103,9 @@ export default function DashboardPage() {
           inventarioTotal: inventario.data.length || 0,
         })
         
-        console.log("Estadísticas cargadas correctamente")
+        safeConsole.log("Estadísticas cargadas correctamente")
       } catch (error) {
-        console.error("Error general obteniendo estadísticas:", error)
+        safeConsole.error("Error general obteniendo estadísticas:", error)
       } finally {
         setIsLoading(false)
       }

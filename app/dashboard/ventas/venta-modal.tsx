@@ -22,6 +22,7 @@ import type { Cliente, Producto, DetalleVenta } from "@/lib/types"
 import { Plus, Trash2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
+import { safeConsole } from "@/lib/utils"
 
 const ventaSchema = yup.object({
   clienteId: yup.number().required("Cliente es requerido"),
@@ -65,7 +66,7 @@ export function VentaModal({ open, onOpenChange, onSuccess }: VentaModalProps) {
         setClientes(clientesRes.data)
         setProductos(productosRes.data)
       } catch (error) {
-        console.error("[v0] Error fetching data:", error)
+        safeConsole.error("[v0] Error fetching data:", error)
       }
     }
     fetchData()

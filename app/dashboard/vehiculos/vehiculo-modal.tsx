@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
 import type { Vehiculo, Cliente } from "@/lib/types"
+import { safeConsole } from "@/lib/utils"
 
 const vehiculoSchema = yup.object({
   placa: yup.string().required("Placa es requerida"),
@@ -70,7 +71,7 @@ export function VehiculoModal({ open, onOpenChange, vehiculo, onSuccess }: Vehic
         const response = await api.get("/clientes")
         setClientes(response.data)
       } catch (error) {
-        console.error("[v0] Error fetching clientes:", error)
+        safeConsole.error("[v0] Error fetching clientes:", error)
       }
     }
     fetchClientes()

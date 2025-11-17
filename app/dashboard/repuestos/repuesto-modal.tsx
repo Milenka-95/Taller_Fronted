@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
 import type { Repuesto, Proveedor, Vehiculo } from "@/lib/types"
+import { safeConsole } from "@/lib/utils"
 
 const repuestoSchema = yup.object({
   nombre: yup.string().required("Nombre es requerido"),
@@ -79,7 +80,7 @@ export function RepuestoModal({ open, onOpenChange, repuesto, onSuccess }: Repue
         setProveedores(proveedoresRes.data)
         setVehiculos(vehiculosRes.data)
       } catch (error) {
-        console.error("Error fetching data:", error)
+        safeConsole.error("Error fetching data:", error)
       }
     }
     fetchData()

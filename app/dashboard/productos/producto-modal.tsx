@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
 import type { Producto, Proveedor } from "@/lib/types"
+import { safeConsole } from "@/lib/utils"
 
 const productoSchema = yup.object({
   nombre: yup.string().required("Nombre es requerido"),
@@ -69,7 +70,7 @@ export function ProductoModal({ open, onOpenChange, producto, onSuccess }: Produ
         const response = await api.get("/proveedores")
         setProveedores(response.data)
       } catch (error) {
-        console.error("[v0] Error fetching proveedores:", error)
+        safeConsole.error("[v0] Error fetching proveedores:", error)
       }
     }
     fetchProveedores()

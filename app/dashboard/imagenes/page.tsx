@@ -6,6 +6,7 @@ import { Plus, Trash2, Download } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useAuthStore } from "@/lib/store"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 import type { Imagen } from "@/lib/types"
 import { ImagenModal } from "./imagen-modal"
 import {
@@ -39,7 +40,7 @@ export default function ImagenesPage() {
       setImagenes(response.data)
       setFilteredImagenes(response.data)
     } catch (error) {
-      console.error("[v0] Error fetching imagenes:", error)
+      safeConsole.error("[v0] Error fetching imagenes:", error)
       toast({
         title: "Error",
         description: "No se pudieron cargar las imágenes",
