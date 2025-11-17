@@ -38,6 +38,7 @@ cp .env.example .env.local
 # Editar .env.local con tu configuración
 ```
 
+
 ### Variables de Entorno
 
 ```bash
