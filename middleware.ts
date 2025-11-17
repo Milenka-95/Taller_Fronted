@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { getCSP } from "./lib/csp"
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("auth-storage")?.value
@@ -16,9 +17,39 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
-  return NextResponse.next()
+  const response = NextResponse.next()
+
+  // Set Content Security Policy
+  response.headers.set('Content-Security-Policy', getCSP())
+
+  // Add Cache-Control headers for sensitive pages
+  if (isAuthPage || isDashboard) {
+    response.headers.set(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
+    )
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+  }
+
+  // Ensure proper Content-Type for HTML responses
+  const pathname = request.nextUrl.pathname
+  if (!pathname.includes('.') && !pathname.startsWith('/_next')) {
+    response.headers.set('Content-Type', 'text/html; charset=utf-8')
+  }
+
+  return response
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 }
