@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { getCSP, generateNonce } from "./lib/csp"
+import { getCSP } from "./lib/csp"
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("auth-storage")?.value
@@ -18,15 +18,9 @@ export function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next()
-  
-  // Generate nonce for CSP
-  const nonce = generateNonce()
 
   // Set Content Security Policy
-  response.headers.set('Content-Security-Policy', getCSP(nonce))
-  
-  // Store nonce for use in HTML (if needed)
-  response.headers.set('X-Nonce', nonce)
+  response.headers.set('Content-Security-Policy', getCSP())
 
   // Add Cache-Control headers for sensitive pages
   if (isAuthPage || isDashboard) {

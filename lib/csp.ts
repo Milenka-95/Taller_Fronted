@@ -5,25 +5,24 @@
  * The CSP is designed to be strict while allowing Next.js to function properly.
  */
 
-export function getCSP(nonce?: string): string {
+export function getCSP(): string {
   const isDev = process.env.NODE_ENV === 'development'
   
   // Generate CSP directives
   const cspDirectives = [
-    // Default source
+    // Default source - only allow resources from same origin
     "default-src 'self'",
     
-    // Script sources - Use nonce if provided, otherwise allow self
-    // Note: 'wasm-unsafe-eval' is needed for Next.js WebAssembly support
-    // 'strict-dynamic' allows scripts loaded by trusted scripts to also be trusted
-    nonce
-      ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://va.vercel-scripts.com`
-      : "script-src 'self' https://va.vercel-scripts.com" + (isDev ? " 'unsafe-eval'" : ""),
+    // Script sources
+    // In production: Use 'strict-dynamic' to allow dynamically loaded scripts
+    // 'unsafe-eval' only in development for hot reloading
+    isDev
+      ? "script-src 'self' 'unsafe-eval' https://va.vercel-scripts.com"
+      : "script-src 'self' https://va.vercel-scripts.com",
     
-    // Style sources - Use nonce if provided
-    nonce
-      ? `style-src 'self' 'nonce-${nonce}'`
-      : "style-src 'self'",
+    // Style sources - Next.js requires some inline styles
+    // Using specific hashes would be ideal but they change with each build
+    "style-src 'self'",
     
     // Image sources - Allow self, data URIs, and HTTPS images
     "img-src 'self' data: https:",
@@ -32,7 +31,7 @@ export function getCSP(nonce?: string): string {
     "font-src 'self' data:",
     
     // Connection sources - Allow API and analytics endpoints
-    "connect-src 'self' http://localhost:8080 https://vitals.vercel-insights.com",
+    "connect-src 'self' http://localhost:8080 https://vitals.vercel-insights.com" + (isDev ? " ws://localhost:3000 ws://localhost:*" : ""),
     
     // Frame ancestors - Prevent clickjacking
     "frame-ancestors 'none'",
@@ -53,13 +52,3 @@ export function getCSP(nonce?: string): string {
   return cspDirectives.join('; ')
 }
 
-/**
- * Generate a cryptographically secure nonce
- */
-export function generateNonce(): string {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-    return crypto.randomUUID()
-  }
-  // Fallback for environments without crypto.randomUUID
-  return Math.random().toString(36).substring(2) + Date.now().toString(36)
-}
