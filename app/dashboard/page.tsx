@@ -54,53 +54,53 @@ export default function DashboardPage() {
       try {
         safeConsole.log("Obteniendo estadísticas del dashboard...")
         
-        // Fetch stats from backend
+        // Fetch stats from backend (normalize to arrays: response.data)
         const [clientes, vehiculos, productos, ventas, repuestos, proveedores, inventario] = await Promise.all([
-          api.get("/clientes").catch((err) => {
+          api.get("/clientes").then((r) => r.data).catch((err) => {
             safeConsole.error("Error obteniendo clientes:", err)
-            return { data: [] }
+            return []
           }),
-          api.get("/vehiculos").catch((err) => {
+          api.get("/vehiculos").then((r) => r.data).catch((err) => {
             safeConsole.error("Error obteniendo vehiculos:", err)
-            return { data: [] }
+            return []
           }),
-          api.get("/productos").catch((err) => {
+          api.get("/productos").then((r) => r.data).catch((err) => {
             safeConsole.error("Error obteniendo productos:", err)
-            return { data: [] }
+            return []
           }),
-          api.get("/ventas").catch((err) => {
+          api.get("/ventas").then((r) => r.data).catch((err) => {
             safeConsole.error("Error obteniendo ventas:", err)
-            return { data: [] }
+            return []
           }),
-          api.get("/repuestos").catch((err) => {
+          api.get("/repuestos").then((r) => r.data).catch((err) => {
             safeConsole.error("Error obteniendo repuestos:", err)
-            return { data: [] }
+            return []
           }),
-          api.get("/proveedores").catch((err) => {
+          api.get("/proveedores").then((r) => r.data).catch((err) => {
             safeConsole.error("Error obteniendo proveedores:", err)
-            return { data: [] }
+            return []
           }),
-          api.get("/inventario").catch((err) => {
+          api.get("/inventario").then((r) => r.data).catch((err) => {
             safeConsole.error("Error obteniendo inventario:", err)
-            return { data: [] }
+            return []
           }),
         ])
 
         const currentMonth = new Date().getMonth()
-        const ventasMesActual = ventas.data.filter((v: any) => {
+        const ventasMesActual = (ventas || []).filter((v: any) => {
           const ventaMonth = new Date(v.fecha).getMonth()
           return ventaMonth === currentMonth
         })
 
         setStats({
-          totalClientes: clientes.data.length || 0,
-          totalVehiculos: vehiculos.data.length || 0,
-          totalProductos: productos.data.length || 0,
-          totalVentas: ventas.data.length || 0,
-          totalRepuestos: repuestos.data.length || 0,
-          totalProveedores: proveedores.data.length || 0,
+          totalClientes: (clientes || []).length || 0,
+          totalVehiculos: (vehiculos || []).length || 0,
+          totalProductos: (productos || []).length || 0,
+          totalVentas: (ventas || []).length || 0,
+          totalRepuestos: (repuestos || []).length || 0,
+          totalProveedores: (proveedores || []).length || 0,
           ventasMes: ventasMesActual.length || 0,
-          inventarioTotal: inventario.data.length || 0,
+          inventarioTotal: (inventario || []).length || 0,
         })
         
         safeConsole.log("Estadísticas cargadas correctamente")
