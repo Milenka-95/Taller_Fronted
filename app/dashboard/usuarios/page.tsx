@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 import type { Usuario } from "@/lib/types"
 import { UsuarioModal } from "./usuario-modal"
 import {
@@ -34,7 +35,7 @@ export default function UsuariosPage() {
       const response = await api.get("/usuarios")
       setUsuarios(response.data)
     } catch (error) {
-      console.error("[v0] Error fetching usuarios:", error)
+      safeConsole.error("[v0] Error fetching usuarios:", error)
       toast({
         title: "Error",
         description: "No se pudieron cargar los usuarios",

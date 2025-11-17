@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 import type { Cliente } from "@/lib/types"
 import { ClienteModal } from "./cliente-modal"
 import {
@@ -34,7 +35,7 @@ export default function ClientesPage() {
       const response = await api.get("/clientes")
       setClientes(response.data)
     } catch (error) {
-      console.error("[v0] Error fetching clientes:", error)
+      safeConsole.error("[v0] Error fetching clientes:", error)
       toast({
         title: "Error",
         description: "No se pudieron cargar los clientes",

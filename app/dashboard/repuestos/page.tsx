@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api"
+import { safeConsole } from "@/lib/utils"
 import type { Repuesto } from "@/lib/types"
 import { RepuestoModal } from "./repuesto-modal"
 import {
@@ -34,7 +35,7 @@ export default function RepuestosPage() {
       const response = await api.get("/repuestos")
       setRepuestos(response.data)
     } catch (error) {
-      console.error("[v0] Error fetching repuestos:", error)
+      safeConsole.error("[v0] Error fetching repuestos:", error)
       toast({
         title: "Error",
         description: "No se pudieron cargar los repuestos",
