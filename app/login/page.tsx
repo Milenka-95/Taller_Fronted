@@ -28,8 +28,6 @@ export default function LoginPage() {
     try {
       const response = await api.post("/auth/login", { correo, password })
       
-      console.log("Respuesta del backend:", response.data)
-
       // Intentar diferentes formas de obtener el token
       const token = response.data?.token || 
                     response.data?.access_token || 
@@ -39,8 +37,6 @@ export default function LoginPage() {
       if (!token) {
         throw new Error("No se recibió token del servidor")
       }
-
-      console.log("Token recibido:", token.substring(0, 30) + "...")
 
       const usuario = {
         id: response.data.usuario?.id || response.data.id || "",
@@ -53,14 +49,13 @@ export default function LoginPage() {
       localStorage.setItem("token", token)
       localStorage.setItem("user", JSON.stringify(usuario))
       
-      // IMPORTANTE: Guardar en cookies para el middleware
+      // IMPORTANTE: Guardar en cookies para el middleware con secure flag en producción
       Cookies.set("auth-storage", token, { 
         expires: 7, // 7 días
         path: "/",
-        sameSite: "lax"
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === 'production'
       })
-
-      console.log("Token guardado en localStorage y cookies")
 
       // Actualizar el store
       login(usuario, token)
@@ -71,15 +66,17 @@ export default function LoginPage() {
       })
 
       // Redirigir al dashboard
-      console.log("Redirigiendo al dashboard...")
       window.location.href = "/dashboard"
       
     } catch (error: any) {
-      console.error("Error en login:", error)
+      // Log errors in development only
+      if (process.env.NODE_ENV === 'development') {
+        console.error("Error en login:", error)
+      }
       
       toast({
         title: "Error de autenticación",
-        description: error.response?.data?.message || error.message || "Credenciales inválidas",
+        description: error.response?.data?.message || "Credenciales inválidas",
         variant: "destructive",
       })
     } finally {
